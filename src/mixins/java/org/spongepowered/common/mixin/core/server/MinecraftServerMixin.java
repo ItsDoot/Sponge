@@ -25,6 +25,7 @@
 package org.spongepowered.common.mixin.core.server;
 
 import com.google.gson.JsonElement;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
@@ -42,6 +43,7 @@ import net.minecraft.world.storage.SessionLockException;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.resourcepack.ResourcePack;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.util.Tristate;
@@ -59,6 +61,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeCommon;
 import org.spongepowered.common.SpongeImplHooks;
+import org.spongepowered.common.bridge.command.CommandSourceProviderBridge;
 import org.spongepowered.common.bridge.permissions.SubjectBridge;
 import org.spongepowered.common.bridge.server.MinecraftServerBridge;
 import org.spongepowered.common.bridge.world.ServerWorldBridge;
@@ -74,7 +77,8 @@ import javax.annotation.Nullable;
 import java.net.URISyntaxException;
 
 @Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin extends RecursiveEventLoop<TickDelayedTask> implements MinecraftServerBridge, SubjectBridge {
+public abstract class MinecraftServerMixin extends RecursiveEventLoop<TickDelayedTask> implements MinecraftServerBridge, SubjectBridge,
+        CommandSourceProviderBridge {
 
     @Shadow @Final private static Logger LOGGER;
     @Shadow @Final protected IChunkStatusListenerFactory chunkStatusListenerFactory;
@@ -83,6 +87,8 @@ public abstract class MinecraftServerMixin extends RecursiveEventLoop<TickDelaye
     @Shadow public abstract boolean shadow$isServerRunning();
     @Shadow public abstract PlayerList shadow$getPlayerList();
     @Shadow public abstract Iterable<ServerWorld> shadow$getWorlds();
+
+    @Shadow public abstract CommandSource getCommandSource();
 
     @Nullable private ResourcePack impl$resourcePack;
     private boolean impl$enableSaving = true;
@@ -273,4 +279,10 @@ public abstract class MinecraftServerMixin extends RecursiveEventLoop<TickDelaye
             this.bridge$updateWorldForDifficulty(world, difficulty, false);
         }
     }
+
+    @Override
+    public CommandSource bridge$getCommandSource(Cause cause) {
+        return this.getCommandSource();
+    }
+
 }

@@ -38,6 +38,8 @@ import org.spongepowered.api.advancement.criteria.trigger.Trigger;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.boss.ServerBossBar;
+import org.spongepowered.api.command.Command;
+import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.meta.BannerPatternLayer;
 import org.spongepowered.api.effect.potion.PotionEffect;
@@ -97,6 +99,10 @@ import org.spongepowered.common.ban.SpongeBanBuilder;
 import org.spongepowered.common.block.SpongeBlockSnapshotBuilder;
 import org.spongepowered.common.block.SpongeBlockStateBuilder;
 import org.spongepowered.common.boss.ServerBossBarBuilder;
+import org.spongepowered.common.command.parameter.SpongeParameterValueBuilder;
+import org.spongepowered.common.command.parameter.multi.SpongeFirstOfParameterBuilder;
+import org.spongepowered.common.command.parameter.multi.SpongeSequenceParameterBuilder;
+import org.spongepowered.common.command.parameter.subcommand.SpongeSubcommandParameterBuilder;
 import org.spongepowered.common.data.builder.meta.SpongePatternLayerBuilder;
 import org.spongepowered.common.data.key.SpongeKeyBuilder;
 import org.spongepowered.common.effect.potion.SpongePotionBuilder;
@@ -246,6 +252,10 @@ public final class SpongeBuilderRegistry implements BuilderRegistry {
             .register(FilteredTrigger.Builder.class, SpongeFilteredTriggerBuilder::new)
             .register(Trigger.Builder.class, SpongeTriggerBuilder::new)
             .register(CatalogKey.Builder.class, SpongeCatalogKeyBuilder::new)
+            .register(Parameter.FirstOfBuilder.class, SpongeFirstOfParameterBuilder::new)
+            .register(Parameter.SequenceBuilder.class, SpongeSequenceParameterBuilder::new)
+            .register(Parameter.Subcommand.Builder.class, SpongeSubcommandParameterBuilder::new)
+
         ;
     }
 }
