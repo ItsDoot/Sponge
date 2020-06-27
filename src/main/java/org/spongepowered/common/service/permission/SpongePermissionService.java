@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.management.OpList;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.service.context.ContextCalculator;
 import org.spongepowered.api.service.permission.PermissionDescription;
 import org.spongepowered.api.service.permission.PermissionDescription.Builder;
@@ -66,8 +67,8 @@ public class SpongePermissionService implements PermissionService {
     private final SpongeSubjectCollection defaultCollection;
     private final SpongeSubject defaultData;
 
-    public SpongePermissionService(Game game) {
-        this.game = game;
+    public SpongePermissionService() {
+        this.game = Sponge.getGame();
         this.subjects.put(SUBJECTS_DEFAULT, (this.defaultCollection = this.newCollection(SUBJECTS_DEFAULT)));
         this.subjects.put(SUBJECTS_USER, new UserCollection(this));
         this.subjects.put(SUBJECTS_GROUP, new OpLevelCollection(this));

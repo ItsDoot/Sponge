@@ -29,7 +29,6 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.manager.CommandManager;
-import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.service.permission.PermissionService;
@@ -52,7 +51,6 @@ import org.spongepowered.common.util.SpongeUsernameCache;
  */
 public final class SpongeBootstrap {
 
-    @Inject private static ServiceManager serviceManager;
     @Inject private static CommandManager commandManager;
 
     public static void initializeServices() {
@@ -78,7 +76,4 @@ public final class SpongeBootstrap {
         commandManager.register(SpongeCommon.getSpongePlugin(), SpongeCallbackHolder.getInstance().createCommand(), SpongeCallbackHolder.CALLBACK_COMMAND);
     }
 
-    private static <T> void registerService(Class<T> serviceClass, T serviceImpl) {
-        serviceManager.setProvider(SpongeCommon.getPlugin(), serviceClass, serviceImpl);
-    }
 }
