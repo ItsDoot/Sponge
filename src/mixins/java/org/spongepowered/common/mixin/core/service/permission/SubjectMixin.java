@@ -70,15 +70,14 @@ public abstract class SubjectMixin implements SubjectBridge {
     @Override
     public Optional<SubjectReference> bridge$resolveReferenceOptional() {
         if (this.impl$subjectReference == null) {
-            final Optional<PermissionService> serv = SpongeCommon.getGame().getServiceManager().provide(PermissionService.class);
-            serv.ifPresent(permissionService -> new SubjectSettingCallback(this).test(permissionService));
+            new SubjectSettingCallback(this).test(SpongeCommon.getGame().getServiceProvider().permissionService());
         }
         return Optional.ofNullable(this.impl$subjectReference);
     }
 
     @Override
     public Optional<Subject> bridge$resolveOptional() {
-        return bridge$resolveReferenceOptional().map(SubjectReference::resolve).map(CompletableFuture::join);
+        return this.bridge$resolveReferenceOptional().map(SubjectReference::resolve).map(CompletableFuture::join);
     }
 
     @Override

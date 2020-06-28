@@ -18,7 +18,7 @@ import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.service.whitelist.WhitelistService;
 import org.spongepowered.api.util.Tuple;
-import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.SpongeCommon;
 import org.spongepowered.common.config.category.ServicesCategory;
 import org.spongepowered.common.event.SpongeEventManager;
 import org.spongepowered.common.event.service.ProvideServiceEventImpl;
@@ -82,7 +82,7 @@ public class SpongeServiceProvider implements ServiceProvider {
             final Iterator<PluginContainer> pluginContainerIterator = toQuery.iterator();
             while (registration == null && pluginContainerIterator.hasNext()) {
                 final PluginContainer pluginContainer = pluginContainerIterator.next();
-                if (!SpongeImpl.getInternalPlugins().contains(pluginContainer)) { // We don't bother with our internal plugins.
+                if (!SpongeCommon.getInternalPlugins().contains(pluginContainer)) { // We don't bother with our internal plugins.
                     registration = getSpecificRegistration(pluginContainer, candidate.getKey());
                 }
             }
@@ -160,7 +160,7 @@ public class SpongeServiceProvider implements ServiceProvider {
     @Override
     @NonNull
     @SuppressWarnings("unchecked")
-    public <T> Optional<ServiceRegistration<T>> registration(@NonNull final Class<T> serviceClass) {
+    public <T> Optional<ServiceRegistration<T>> getRegistration(@NonNull final Class<T> serviceClass) {
         return Optional.ofNullable((ServiceRegistration<T>) this.services.get(serviceClass));
     }
 

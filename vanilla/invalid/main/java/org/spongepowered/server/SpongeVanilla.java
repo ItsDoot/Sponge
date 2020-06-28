@@ -144,11 +144,6 @@ public final class SpongeVanilla extends MetaPluginContainer {
     public void initialize() {
         this.registry.init();
 
-        if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
-            SpongePermissionService service = new SpongePermissionService(this.game);
-            this.game.getServiceManager().setProvider(this, PermissionService.class, service);
-        }
-
         SpongeCommon.postState(GameState.INITIALIZATION, SpongeEventFactory.createGameInitializationEvent(Sponge.getCauseStackManager().getCurrentCause()));
 
         this.registry.postInit();
@@ -179,9 +174,17 @@ public final class SpongeVanilla extends MetaPluginContainer {
     }
 
     public void onServerStopped() throws IOException {
+<<<<<<< HEAD
         SpongeCommon.postState(GameState.SERVER_STOPPED, SpongeEventFactory.createGameStoppedServerEvent(Sponge.getCauseStackManager().getCurrentCause()));
         ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
         SpongeCommon.getConfigSaveManager().flush();
+=======
+        SpongeImpl.postState(GameState.SERVER_STOPPED, SpongeEventFactory.createGameStoppedServerEvent(Sponge.getCauseStackManager().getCurrentCause()));
+        if (this.game.getServiceProvider().sqlService() instanceof SqlServiceImpl) {
+            ((SqlServiceImpl) this.game.getServiceProvider().sqlService()).close();
+        }
+        SpongeImpl.getConfigSaveManager().flush();
+>>>>>>> 1762dc36f... Add entry point to service provider, make changes to support this
     }
 
     @Override

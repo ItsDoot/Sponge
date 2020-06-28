@@ -25,15 +25,20 @@
 package org.spongepowered.common;
 
 import com.google.common.base.MoreObjects;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.SystemSubject;
+import org.spongepowered.api.service.ServiceProvider;
+import org.spongepowered.common.config.category.ServicesCategory;
 import org.spongepowered.common.scheduler.AsyncScheduler;
+import org.spongepowered.common.service.SpongeServiceProvider;
 
 import java.nio.file.Path;
 
 public abstract class SpongeGame implements Game {
 
     private final AsyncScheduler asyncScheduler = new AsyncScheduler();
+    private SpongeServiceProvider serviceProvider;
 
     @Override
     public Path getGameDirectory() {
@@ -48,6 +53,19 @@ public abstract class SpongeGame implements Game {
     @Override
     public AsyncScheduler getAsyncScheduler() {
         return this.asyncScheduler;
+    }
+
+    public void initServiceProvider(final ServicesCategory.@NonNull ServicePluginSubCategory category) {
+        this.serviceProvider = SpongeServiceProvider.discoverServices(category);
+    }
+
+    @Override
+    @NonNull
+    public ServiceProvider getServiceProvider() {
+        if (this.serviceProvider == null) {
+            throw new IllegalStateException("The ServiceProvider is not available yet");
+        }
+        return this.serviceProvider;
     }
 
     @Override

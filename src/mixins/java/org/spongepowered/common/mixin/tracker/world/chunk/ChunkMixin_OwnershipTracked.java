@@ -90,7 +90,7 @@ public abstract class ChunkMixin_OwnershipTracked implements ChunkBridge {
                                           final ITickList<Fluid> fluidTickList, final long inhabitedTime, final ChunkSection[] sections, final Consumer<Chunk> chunkConsumer, final CallbackInfo ci) {
         this.tracker$userStorageService = world != null && !((WorldBridge) world).bridge$isFake()
                                   ? null
-                                  : SpongeCommon.getGame().getServiceManager().provideUnchecked(UserStorageService.class);
+                                  : SpongeCommon.getGame().getServiceProvider().userStorageService();
     }
 
     @Override

@@ -33,6 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.asm.mixin.Mixin;
@@ -69,7 +70,7 @@ public abstract class OwnershipTrackedMixin_Tracker implements OwnershipTrackedB
     }
 
     @Override
-    public void tracked$setOwnerReference(@Nullable User owner) {
+    public void tracked$setOwnerReference(@Nullable final User owner) {
         this.tracker$ownerUser = new WeakReference<>(owner);
         this.tracker$owner = owner == null ? null : owner.getUniqueId();
     }
@@ -88,7 +89,7 @@ public abstract class OwnershipTrackedMixin_Tracker implements OwnershipTrackedB
     }
 
     @Override
-    public void tracked$setNotifier(@Nullable User notifier) {
+    public void tracked$setNotifier(@Nullable final User notifier) {
         this.tracker$notifierUser = new WeakReference<>(notifier);
         this.tracker$notifier = notifier == null ? null : notifier.getUniqueId();
     }
@@ -107,23 +108,23 @@ public abstract class OwnershipTrackedMixin_Tracker implements OwnershipTrackedB
     }
 
     @Override
-    public Optional<User> tracked$getTrackedUser(PlayerTracker.Type nbtKey) {
+    public Optional<User> tracked$getTrackedUser(final PlayerTracker.Type nbtKey) {
         final UUID uuid = this.getTrackedUniqueId(nbtKey);
 
         if (uuid == null) {
             return Optional.empty();
         }
         // get player if online
-        final Player player = Sponge.getServer().getPlayer(uuid).orElse(null);
+        final ServerPlayer player = Sponge.getServer().getPlayer(uuid).orElse(null);
         if (player != null) {
-            return Optional.of(player);
+            return Optional.of(player.getUser());
         }
         // player is not online, get user from storage if one exists
         if (this.tracker$profileManager == null) {
             this.tracker$profileManager = ((SpongeProfileManager) Sponge.getServer().getGameProfileManager());
         }
         if (this.tracker$userService == null) {
-            this.tracker$userService = SpongeCommon.getGame().getServiceManager().provide(UserStorageService.class).get();
+            this.tracker$userService = SpongeCommon.getGame().getServiceProvider().userStorageService();
         }
 
         // check username cache
@@ -144,7 +145,7 @@ public abstract class OwnershipTrackedMixin_Tracker implements OwnershipTrackedB
     }
 
     @Override
-    public void tracked$setTrackedUUID(PlayerTracker.Type type, @Nullable UUID uuid) {
+    public void tracked$setTrackedUUID(final PlayerTracker.Type type, @Nullable final UUID uuid) {
         if (PlayerTracker.Type.OWNER == type) {
             this.tracker$owner = uuid;
         } else if (PlayerTracker.Type.NOTIFIER == type) {
@@ -170,7 +171,7 @@ public abstract class OwnershipTrackedMixin_Tracker implements OwnershipTrackedB
     }
 
     @Nullable
-    private UUID getTrackedUniqueId(PlayerTracker.Type type) {
+    private UUID getTrackedUniqueId(final PlayerTracker.Type type) {
         if (this.tracker$owner != null && PlayerTracker.Type.OWNER == type) {
             return this.tracker$owner;
         }
