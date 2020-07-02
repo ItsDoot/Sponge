@@ -82,7 +82,7 @@ public class SpongeServiceProvider implements ServiceProvider {
             final Iterator<PluginContainer> pluginContainerIterator = toQuery.iterator();
             while (registration == null && pluginContainerIterator.hasNext()) {
                 final PluginContainer pluginContainer = pluginContainerIterator.next();
-                if (!SpongeCommon.getInternalPlugins().contains(pluginContainer)) { // We don't bother with our internal plugins.
+                if (!SpongeCommon.getServer().getInternalPlugins().contains(pluginContainer)) { // We don't bother with our internal plugins.
                     registration = getSpecificRegistration(pluginContainer, candidate.getKey());
                 }
             }
@@ -95,7 +95,7 @@ public class SpongeServiceProvider implements ServiceProvider {
             // If after all that we have a registration, we... register it.
             if (registration != null) {
                 services.put(candidate.getKey(), registration);
-                SpongeImpl.getLogger().info("Registered service {} to plugin {}.",
+                SpongeCommon.getLogger().info("Registered service {} to plugin {}.",
                         registration.clazz.getSimpleName(),
                         registration.pluginContainer.getMetadata().getId());
             }
@@ -126,14 +126,14 @@ public class SpongeServiceProvider implements ServiceProvider {
             try {
                 return new Registration<>(service, event.getSuggestion().get(), container);
             } catch (final Throwable e) { // if the service can't be created
-                SpongeImpl.getLogger().error("Could not create service {} from plugin {}.",
+                SpongeCommon.getLogger().error("Could not create service {} from plugin {}.",
                         service.getSimpleName(),
                         container.getMetadata().getId(),
                         e);
                 return null;
             }
         }
-        SpongeImpl.getLogger().error("Could not create service {} from plugin {}, no service was provided.", service.getSimpleName(),
+        SpongeCommon.getLogger().error("Could not create service {} from plugin {}, no service was provided.", service.getSimpleName(),
                 container.getMetadata().getId());
         return null;
     }
