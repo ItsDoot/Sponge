@@ -42,7 +42,8 @@ public class SpongeArgumentCommandNodeBuilder<T> extends ArgumentBuilder<Command
     public SpongeArgumentCommandNodeBuilder(
             final SpongeParameterKey<? super T> key,
             final ArgumentParser<? extends T> type,
-            final ValueCompleter completer) {
+            final ValueCompleter completer,
+            final boolean isConsumeAll) {
         this.key = key;
         this.type = type;
         this.completer = type == completer && type instanceof StandardArgumentParser ? null : completer;

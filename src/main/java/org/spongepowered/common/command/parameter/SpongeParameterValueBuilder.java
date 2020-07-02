@@ -108,7 +108,7 @@ public class SpongeParameterValueBuilder<T> implements Parameter.Value.Builder<T
     @Override
     public Parameter.Value.@NonNull Builder<T> consumeAllRemaining() {
         this.consumesAll = true;
-        return this;
+        return this.terminal();
     }
 
     @Override

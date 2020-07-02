@@ -93,7 +93,6 @@ public final class SpongeParameterTranslator {
 
         // Inferred because it checks to see if everything ahead is optional or terminal.
         boolean isInferredTermination = canBeTerminal && !hasNext;
-        final ArgumentBuilder<CommandSource, ?> currentNode;
 
         if (currentParameter instanceof Parameter.Subcommand) {
             createSubcommand((Parameter.Subcommand) currentParameter, builtNodeConsumer);
@@ -120,20 +119,25 @@ public final class SpongeParameterTranslator {
 
             final Parameter.Value<?> valueParameter = ((Parameter.Value<?>) currentParameter);
 
-            isInferredTermination &= valueParameter.isTerminal();
+            final boolean isConsumeAll = valueParameter.willConsumeAllRemaining();
+            isInferredTermination &= (valueParameter.isTerminal() || isConsumeAll);
+
+            if (isConsumeAll && parameters.hasNext()) {
+                // this should not happen.
+                throw new IllegalStateException("A parameter that consumes all must be at the end of a parameter chain.");
+            }
 
             // Process the next element if it exists
-            currentNode = createNode(valueParameter);
-
+            final SpongeArgumentCommandNodeBuilder<?> currentNode = createNode(valueParameter);
             if (parameters.hasNext()) {
                 // We still need to execute createNode, so this order matters.
-                isInferredTermination |= createNode(
+                isInferredTermination = (createNode(
                         parameters,
                         executorWrapper,
                         currentNode::then,
                         lastNodeCallback,
                         potentialOptionalRedirects,
-                        canBeTerminal) && canBeTerminal;
+                        canBeTerminal) && canBeTerminal) || isInferredTermination;
             }
 
             if (isInferredTermination || valueParameter.isTerminal()) {
@@ -167,8 +171,13 @@ public final class SpongeParameterTranslator {
             // Apply the node to the parent if required.
             final CommandNode<CommandSource> builtNode = currentNode.build();
             builtNodeConsumer.accept(builtNode);
+            if (isConsumeAll) {
+                // the built child will return to the previous node, which will allow this
+                // to be called again.
+                builtNode.addChild(currentNode.redirect(builtNode).build());
+            }
 
-            if (currentParameter.isOptional()) {
+            if (currentParameter.isOptional() && hasNext) {
                 potentialOptionalRedirects.add(builtNode);
             } else {
                 potentialOptionalRedirects.clear();
@@ -214,9 +223,11 @@ public final class SpongeParameterTranslator {
         }
 
         final SpongeArgumentCommandNodeBuilder<T> argumentBuilder =
-                new SpongeArgumentCommandNodeBuilder<T>(SpongeParameterKey.getSpongeKey(parameter.getKey()),
+                new SpongeArgumentCommandNodeBuilder<T>(
+                        SpongeParameterKey.getSpongeKey(parameter.getKey()),
                         type,
-                        parameter.getCompleter());
+                        parameter.getCompleter(),
+                        parameter.willConsumeAllRemaining());
 
         // CommandCause is mixed into CommandSource, so this is okay.
         argumentBuilder.requires((Predicate) parameter.getRequirement());

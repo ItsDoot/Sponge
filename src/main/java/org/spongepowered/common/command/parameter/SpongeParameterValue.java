@@ -192,6 +192,11 @@ public class SpongeParameterValue<T> implements Parameter.Value<T> {
         return this.isOptional;
     }
 
+    @Override
+    public boolean willConsumeAllRemaining() {
+        return this.consumeAll;
+    }
+
     @SuppressWarnings("unchecked")
     @Nullable
     public ArgumentParser<? extends T> getArgumentTypeIfStandard() {
