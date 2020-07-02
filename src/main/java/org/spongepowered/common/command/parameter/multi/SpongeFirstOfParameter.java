@@ -46,14 +46,19 @@ public class SpongeFirstOfParameter extends SpongeMultiParameter {
             final SpongeCommandExecutorWrapper executorWrapper,
             final Consumer<CommandNode<CommandSource>> builtNodeConsumer,
             final Consumer<ArgumentBuilder<CommandSource, ?>> nodeCallback,
-            List<CommandNode<CommandSource>> potentialOptionalRedirects,
+            final List<CommandNode<CommandSource>> potentialOptionalRedirects,
             final boolean isTermination) {
 
         // If we have a termination, this is easy!
         // If not, it's a little more complicated. But it's all handled by `nodeCallback` anyway.
         boolean first = true;
+
+        // This will grab the first built node, that is, the last in a tree list.
         final Grabber grabber = new Grabber(builtNodeConsumer);
+
+        // The redirector redirects to the grabbed node - which will continue execution to the node after this.
         final Consumer<ArgumentBuilder<CommandSource, ?>> redirector = node -> node.redirect(grabber.grabbed);
+
         for (final Parameter parameter : this.getParameterCandidates()) {
             if (parameter instanceof SpongeSequenceParameter) {
                 final SpongeSequenceParameter sequenceParameter = ((SpongeSequenceParameter) parameter);
@@ -62,7 +67,8 @@ public class SpongeFirstOfParameter extends SpongeMultiParameter {
                         executorWrapper,
                         grab ? grabber : builtNodeConsumer,
                         first && isTermination ? nodeCallback : redirector, // latter is used for merging command paths back together.
-                        potentialOptionalRedirects, isTermination);
+                        potentialOptionalRedirects,
+                        isTermination);
             } else {
                 final List<Parameter> parameters = new ArrayList<>();
                 parameters.add(parameter);

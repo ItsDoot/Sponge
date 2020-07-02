@@ -75,6 +75,7 @@ public final class SpongeCommon {
     @Inject @Nullable private static SpongeGame game;
     @Inject @Nullable private static SpongeGameRegistry registry;
     @Inject @Nullable private static SpongeScheduler scheduler;
+    @Inject @Nullable private static SpongeCommandManager commandManager;
     @Inject @Nullable private static SpongeCauseStackManager causeStackManager;
     @Inject @Nullable private static SpongeWorldManager worldManager;
 

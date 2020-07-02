@@ -116,4 +116,5 @@ public class SpongeImmutableArgumentReader implements ArgumentReader.Immutable, 
         reader.setCursor(this.cursor);
         return (ArgumentReader.Mutable) reader;
     }
+
 }

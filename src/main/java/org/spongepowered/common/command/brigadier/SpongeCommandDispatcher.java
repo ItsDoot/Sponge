@@ -74,7 +74,7 @@ public class SpongeCommandDispatcher extends CommandDispatcher<CommandSource> {
 
     private ParseResults<CommandSource> parseNodes(
             final CommandNode<CommandSource> node,
-            final SpongeStringReader originalReader,
+            final SpongeStringReader reader,
             final SpongeCommandContextBuilder contextSoFar) {
 
         final CommandSource source = contextSoFar.getSource();
@@ -82,15 +82,14 @@ public class SpongeCommandDispatcher extends CommandDispatcher<CommandSource> {
         Map<CommandNode<CommandSource>, CommandSyntaxException> errors = null;
         List<ParseResults<CommandSource>> potentials = null;
         // Sponge End
-        final int cursor = originalReader.getCursor();
+        final int cursor = reader.getCursor();
 
-        for (final CommandNode<CommandSource> child : node.getRelevantNodes(originalReader)) {
+        for (final CommandNode<CommandSource> child : node.getRelevantNodes(reader)) {
             if (!child.canUse(source)) {
                 continue;
             }
             // Sponge Start
             final SpongeCommandContextBuilder context = contextSoFar.copy();
-            final SpongeStringReader reader = new SpongeStringReader(originalReader);
             // Sponge End
             try {
                 try {
@@ -117,12 +116,9 @@ public class SpongeCommandDispatcher extends CommandDispatcher<CommandSource> {
                 reader.skip();
                 if (child.getRedirect() != null) {
                     // Sponge Start
-                    // Because we "hide" our context in the StringReader for our nodes, we need to create a new reader and use
-                    // that in the redirect. We then need to sync the cursor position back.
-                    final SpongeCommandContextBuilder childContext = new SpongeCommandContextBuilder(this, source, child.getRedirect(), reader.getCursor());
-                    final SpongeStringReader spongeStringReader = new SpongeStringReader(reader);
-                    final ParseResults<CommandSource> parse = this.parseNodes(child.getRedirect(), spongeStringReader, childContext);
-                    reader.setCursor(reader.getCursor());
+                    final SpongeCommandContextBuilder childContext =
+                            new SpongeCommandContextBuilder(this, source, child.getRedirect(), reader.getCursor());
+                    final ParseResults<CommandSource> parse = this.parseNodes(child.getRedirect(), reader, childContext);
                     // Sponge End
                     context.withChild(parse.getContext());
                     return new ParseResults<>(context, parse.getReader(), parse.getExceptions());
@@ -162,7 +158,7 @@ public class SpongeCommandDispatcher extends CommandDispatcher<CommandSource> {
             return potentials.get(0);
         }
 
-        return new ParseResults<>(contextSoFar, originalReader, errors == null ? Collections.emptyMap() : errors);
+        return new ParseResults<>(contextSoFar, reader, errors == null ? Collections.emptyMap() : errors);
     }
 
 }

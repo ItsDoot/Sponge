@@ -109,13 +109,13 @@ public final class SpongeParameterTranslator {
                                     potentialOptionalRedirects,
                                     canBeTerminal);
 
-            isInferredTermination |= ((SpongeMultiParameter) currentParameter).createNode(
+            isInferredTermination = ((SpongeMultiParameter) currentParameter).createNode(
                     executorWrapper,
                     builtNodeConsumer,
                     nodeCallback,
                     potentialOptionalRedirects,
                     isInferredTermination
-            );
+            ) || isInferredTermination;
         } else if (currentParameter instanceof Parameter.Value<?>) {
 
             final Parameter.Value<?> valueParameter = ((Parameter.Value<?>) currentParameter);
@@ -147,6 +147,19 @@ public final class SpongeParameterTranslator {
             // Add "then" to nodes that are optional ahead of it, but only if we're not terminating here.
             if (!isInferredTermination) {
                 for (final CommandNode<CommandSource> optionalRedirect : potentialOptionalRedirects) {
+                    // I would much rather this be redirects, but we can't do that right now thanks to a Brig
+                    // limitation, where you can't have a child and a redirect at the same time.
+                    //
+                    // (with optional, if you go A-B-C-D and B is optional, we can't make B redirect to A because
+                    // that'll let B be selected again, and we can't make A redirect to B as well as have B as a
+                    // child - reasons above)
+                    //
+                    // Another option will be to create dummy nodes that no-one has permissions for and attach them
+                    // to the tree - that'll be messy but may have to be the solution to reduce what is sent to the
+                    // client... hopefully.
+                    //
+                    // If we could change the client completion logic from the server, this would be simpler, alas,
+                    // we cannot.
                     currentNode.then(optionalRedirect);
                 }
             }
