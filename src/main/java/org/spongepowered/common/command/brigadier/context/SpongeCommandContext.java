@@ -39,7 +39,7 @@ import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.ServerLocation;
 
 import java.util.Collection;
 import java.util.List;
@@ -91,7 +91,7 @@ public class SpongeCommandContext extends CommandContext<CommandSource> implemen
 
     @Override
     @NonNull
-    public Optional<Location> getLocation() {
+    public Optional<ServerLocation> getLocation() {
         return this.getCommandCause().getLocation();
     }
 
@@ -112,13 +112,13 @@ public class SpongeCommandContext extends CommandContext<CommandSource> implemen
 
     @Override
     @NonNull
-    public <T> Optional<T> getOne(final Parameter.@NonNull Key<T> key) {
+    public <T> Optional<T> getOne(final Parameter.@NonNull Key<? super T> key) {
         return Optional.ofNullable(this.getValue(key));
     }
 
     @Override
     @NonNull
-    public <T> T requireOne(final Parameter.@NonNull Key<T> key) throws NoSuchElementException {
+    public <T> T requireOne(final Parameter.@NonNull Key<? super T> key) throws NoSuchElementException {
         final T value = this.getValue(key);
         if (value == null) {
             throw new NoSuchElementException("No value exists for key " + key.key());
@@ -130,7 +130,7 @@ public class SpongeCommandContext extends CommandContext<CommandSource> implemen
     @Override
     @NonNull
     @SuppressWarnings("unchecked")
-    public <T> Collection<? extends T> getAll(final Parameter.@NonNull Key<T> key) {
+    public <T> Collection<? extends T> getAll(final Parameter.@NonNull Key<? super T> key) {
         final Collection<? extends T> values = (Collection<? extends T>) this.argumentMap.get(key);
         if (values == null) {
             return ImmutableList.of();
@@ -141,7 +141,7 @@ public class SpongeCommandContext extends CommandContext<CommandSource> implemen
 
     @Nullable
     @SuppressWarnings("unchecked")
-    private <T> T getValue(final Parameter.Key<T> key) {
+    private <T> T getValue(final Parameter.Key<? super T> key) {
         final Collection<?> values = this.argumentMap.get(key);
         if (values == null || values.isEmpty()) {
             return null;

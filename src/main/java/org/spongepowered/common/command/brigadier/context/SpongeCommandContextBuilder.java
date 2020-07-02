@@ -245,7 +245,7 @@ public class SpongeCommandContextBuilder extends CommandContextBuilder<CommandSo
     @Override
     @NonNull
     @SuppressWarnings("unchecked")
-    public <T> Optional<T> getOne(final Parameter.@NonNull Key<T> key) {
+    public <T> Optional<T> getOne(final Parameter.@NonNull Key<? super T> key) {
         final SpongeParameterKey<T> spongeParameterKey = SpongeParameterKey.getSpongeKey(key);
         final Collection<?> collection = this.getFrom(spongeParameterKey);
         if (collection.size() > 1) {
@@ -258,7 +258,7 @@ public class SpongeCommandContextBuilder extends CommandContextBuilder<CommandSo
     @Override
     @NonNull
     @SuppressWarnings("unchecked")
-    public <T> T requireOne(final Parameter.@NonNull Key<T> key) throws NoSuchElementException, IllegalArgumentException {
+    public <T> T requireOne(final Parameter.@NonNull Key<? super T> key) throws NoSuchElementException, IllegalArgumentException {
         final SpongeParameterKey<T> spongeParameterKey = SpongeParameterKey.getSpongeKey(key);
         final Collection<?> collection = this.getFrom(spongeParameterKey);
         if (collection.size() > 1) {
@@ -273,7 +273,7 @@ public class SpongeCommandContextBuilder extends CommandContextBuilder<CommandSo
     @Override
     @NonNull
     @SuppressWarnings("unchecked")
-    public <T> Collection<? extends T> getAll(final Parameter.@NonNull Key<T> key) {
+    public <T> Collection<? extends T> getAll(final Parameter.@NonNull Key<? super T> key) {
         return (Collection<? extends T>) this.getFrom(SpongeParameterKey.getSpongeKey(key));
     }
 

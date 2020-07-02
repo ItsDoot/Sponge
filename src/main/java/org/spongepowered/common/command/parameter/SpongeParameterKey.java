@@ -40,7 +40,7 @@ public final class SpongeParameterKey<T> implements Parameter.Key<T> {
     private final TypeToken<T> typeToken;
 
     @SuppressWarnings("unchecked")
-    public static <T> SpongeParameterKey<T> getSpongeKey(final Parameter.@NonNull Key<T> key) {
+    public static <T> SpongeParameterKey<T> getSpongeKey(final Parameter.@NonNull Key<? super T> key) {
         if (key instanceof SpongeParameterKey) {
             return (SpongeParameterKey<T>) key;
         }

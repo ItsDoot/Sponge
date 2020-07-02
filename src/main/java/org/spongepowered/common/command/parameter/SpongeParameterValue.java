@@ -27,7 +27,6 @@ package org.spongepowered.common.command.parameter;
 import static org.spongepowered.common.util.SpongeCommonTranslationHelper.t;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.brigadier.arguments.ArgumentType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.command.CommandCause;
@@ -39,7 +38,6 @@ import org.spongepowered.api.command.parameter.managed.ValueCompleter;
 import org.spongepowered.api.command.parameter.managed.ValueParser;
 import org.spongepowered.api.command.parameter.managed.ValueUsage;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.common.command.brigadier.argument.SpongeArgumentType;
 import org.spongepowered.common.command.brigadier.argument.parser.ArgumentParser;
 
 import java.util.ArrayList;
