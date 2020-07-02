@@ -41,7 +41,7 @@ import org.spongepowered.api.command.manager.CommandMapping;
 import org.spongepowered.api.command.registrar.CommandRegistrar;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Tuple;
-import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.SpongeCommon;
 import org.spongepowered.common.command.manager.SpongeCommandManager;
 import org.spongepowered.plugin.PluginContainer;
 
@@ -146,6 +146,6 @@ public abstract class SpongeCommandRegistrar<T extends Command> implements Comma
     abstract LiteralArgumentBuilder<CommandSource> createNode(final String primaryAlias, final T command);
 
     protected CommandDispatcher<CommandSource> getDispatcher() {
-        return SpongeImpl.getServer().getCommandManager().getDispatcher();
+        return SpongeCommon.getServer().getCommandManager().getDispatcher();
     }
 }

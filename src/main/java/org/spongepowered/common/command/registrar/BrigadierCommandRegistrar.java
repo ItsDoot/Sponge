@@ -43,7 +43,7 @@ import org.spongepowered.api.command.manager.CommandMapping;
 import org.spongepowered.api.command.registrar.CommandRegistrar;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Tuple;
-import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.SpongeCommon;
 import org.spongepowered.common.command.brigadier.SpongeCommandDispatcher;
 import org.spongepowered.plugin.PluginContainer;
 
@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
 public class BrigadierCommandRegistrar implements CommandRegistrar<LiteralCommandNode<CommandSource>> {
 
     public static final BrigadierCommandRegistrar INSTANCE = new BrigadierCommandRegistrar();
-    public static final CatalogKey CATALOG_KEY = CatalogKey.builder().namespace(SpongeImpl.getMinecraftPlugin()).value("brigadier").build();
+    public static final CatalogKey CATALOG_KEY = CatalogKey.sponge("brigadier");
 
     private BrigadierCommandRegistrar() {}
 
@@ -125,7 +125,7 @@ public class BrigadierCommandRegistrar implements CommandRegistrar<LiteralComman
         final String requestedAlias = command.getLiteral();
 
         // This will throw an error if there is an issue.
-        final CommandMapping mapping = SpongeImpl.getCommandManager().registerAlias(
+        final CommandMapping mapping = SpongeCommon.getCommandManager().registerAlias(
                         registrar,
                         container,
                         command,
@@ -161,12 +161,12 @@ public class BrigadierCommandRegistrar implements CommandRegistrar<LiteralComman
         }
 
         final LiteralCommandNode<CommandSource> builtNode =
-                ((SpongeCommandDispatcher) SpongeImpl.getServer().getCommandManager().getDispatcher()).registerInternal(literalToRegister);
+                ((SpongeCommandDispatcher) SpongeCommon.getServer().getCommandManager().getDispatcher()).registerInternal(literalToRegister);
 
         // Redirect aliases
         for (final String alias : mapping.getAllAliases()) {
             if (!alias.equals(literalToRegister.getLiteral())) {
-                SpongeImpl.getServer().getCommandManager().getDispatcher()
+                SpongeCommon.getServer().getCommandManager().getDispatcher()
                         .register(LiteralArgumentBuilder.<CommandSource>literal(alias).requires(builtNode.getRequirement()).redirect(builtNode));
             }
         }
@@ -178,7 +178,7 @@ public class BrigadierCommandRegistrar implements CommandRegistrar<LiteralComman
     @NonNull
     public CommandResult process(@NonNull final CommandCause cause, @NonNull final String command, @NonNull final String arguments) throws CommandException {
         try {
-            final int result = SpongeImpl.getServer().getCommandManager().getDispatcher().execute(command + " " + arguments, (CommandSource) cause);
+            final int result = SpongeCommon.getServer().getCommandManager().getDispatcher().execute(command + " " + arguments, (CommandSource) cause);
             return CommandResult.builder().setResult(result).build();
         } catch (final CommandSyntaxException e) {
             throw new CommandException(Text.of(e.getMessage()), e);
@@ -188,7 +188,7 @@ public class BrigadierCommandRegistrar implements CommandRegistrar<LiteralComman
     @Override
     @NonNull
     public List<String> suggestions(@NonNull final CommandCause cause, @NonNull final String command, @NonNull final String arguments) {
-        final CommandDispatcher<CommandSource> dispatcher = SpongeImpl.getServer().getCommandManager().getDispatcher();
+        final CommandDispatcher<CommandSource> dispatcher = SpongeCommon.getServer().getCommandManager().getDispatcher();
         final CompletableFuture<Suggestions> suggestionsCompletableFuture =
                 dispatcher.getCompletionSuggestions(dispatcher.parse(command + " " + arguments, (CommandSource) cause));
         // TODO: Fix so that we keep suggestions in the Mojang format?
@@ -198,7 +198,7 @@ public class BrigadierCommandRegistrar implements CommandRegistrar<LiteralComman
     @Override
     @NonNull
     public Optional<Text> help(@NonNull final CommandCause cause, @NonNull final String command) {
-        final CommandDispatcher<CommandSource> dispatcher = SpongeImpl.getServer().getCommandManager().getDispatcher();
+        final CommandDispatcher<CommandSource> dispatcher = SpongeCommon.getServer().getCommandManager().getDispatcher();
         final CommandNode<CommandSource> node = dispatcher.findNode(Collections.singletonList(command));
         if (node != null) {
             return Optional.of(Text.of(dispatcher.getSmartUsage(node, (CommandSource) cause)));
@@ -214,7 +214,7 @@ public class BrigadierCommandRegistrar implements CommandRegistrar<LiteralComman
     }
 
     private CommandDispatcher<CommandSource> getDispatcher() {
-        return SpongeImpl.getServer().getCommandManager().getDispatcher();
+        return SpongeCommon.getServer().getCommandManager().getDispatcher();
     }
 
 }

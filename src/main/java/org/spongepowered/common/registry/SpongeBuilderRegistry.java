@@ -99,6 +99,7 @@ import org.spongepowered.common.ban.SpongeBanBuilder;
 import org.spongepowered.common.block.SpongeBlockSnapshotBuilder;
 import org.spongepowered.common.block.SpongeBlockStateBuilder;
 import org.spongepowered.common.boss.ServerBossBarBuilder;
+import org.spongepowered.common.command.SpongeParameterizedCommandBuilder;
 import org.spongepowered.common.command.parameter.SpongeParameterValueBuilder;
 import org.spongepowered.common.command.parameter.multi.SpongeFirstOfParameterBuilder;
 import org.spongepowered.common.command.parameter.multi.SpongeSequenceParameterBuilder;
@@ -252,6 +253,7 @@ public final class SpongeBuilderRegistry implements BuilderRegistry {
             .register(FilteredTrigger.Builder.class, SpongeFilteredTriggerBuilder::new)
             .register(Trigger.Builder.class, SpongeTriggerBuilder::new)
             .register(CatalogKey.Builder.class, SpongeCatalogKeyBuilder::new)
+            .register(Command.Builder.class, SpongeParameterizedCommandBuilder::new)
             .register(Parameter.FirstOfBuilder.class, SpongeFirstOfParameterBuilder::new)
             .register(Parameter.SequenceBuilder.class, SpongeSequenceParameterBuilder::new)
             .register(Parameter.Subcommand.Builder.class, SpongeSubcommandParameterBuilder::new)

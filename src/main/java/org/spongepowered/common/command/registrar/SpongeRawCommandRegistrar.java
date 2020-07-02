@@ -41,7 +41,6 @@ import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.command.manager.CommandFailedRegistrationException;
 import org.spongepowered.api.command.manager.CommandMapping;
 import org.spongepowered.api.command.registrar.StandardCommandRegistrar;
-import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.command.SpongeParameterizedCommand;
 import org.spongepowered.common.command.brigadier.context.SpongeCommandContext;
 import org.spongepowered.common.command.exception.SpongeCommandSyntaxException;
@@ -58,7 +57,7 @@ import java.util.concurrent.CompletableFuture;
 public class SpongeRawCommandRegistrar extends SpongeCommandRegistrar<Command> implements StandardCommandRegistrar {
 
     private static final String PARAMETER_NAME = "parameters";
-    public static final CatalogKey CATALOG_KEY = CatalogKey.builder().namespace(SpongeImpl.getSpongePlugin()).value("raw").build();
+    public static final CatalogKey CATALOG_KEY = CatalogKey.sponge("raw");
     public static final SpongeRawCommandRegistrar INSTANCE = new SpongeRawCommandRegistrar(CATALOG_KEY);
 
     private SpongeRawCommandRegistrar(final CatalogKey catalogKey) {

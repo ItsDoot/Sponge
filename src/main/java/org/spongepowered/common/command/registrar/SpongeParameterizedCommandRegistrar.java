@@ -29,7 +29,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandSource;
 import org.spongepowered.api.CatalogKey;
 import org.spongepowered.api.command.Command;
-import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.command.SpongeParameterizedCommand;
 
 /**
@@ -37,7 +36,7 @@ import org.spongepowered.common.command.SpongeParameterizedCommand;
  */
 public class SpongeParameterizedCommandRegistrar extends SpongeCommandRegistrar<Command.Parameterized> {
 
-    public static final CatalogKey CATALOG_KEY = CatalogKey.builder().namespace(SpongeImpl.getSpongePlugin()).value("managed").build();
+    public static final CatalogKey CATALOG_KEY = CatalogKey.sponge("managed");
     public static final SpongeParameterizedCommandRegistrar INSTANCE = new SpongeParameterizedCommandRegistrar(CATALOG_KEY);
 
     private SpongeParameterizedCommandRegistrar(final CatalogKey catalogKey) {
